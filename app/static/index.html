@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Use Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* Left Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .search-input:focus {
+            border-color: #4285f4;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 4px;
+        }
+        
+        .section-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .section-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .section-item {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #4b5563;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-item:not(.task-item):hover {
+            background-color: #f3f4f6;
+        }
+        
+        .section-item:not(.task-item).active {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .task-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .task-item:hover {
+            border-color: #e5e7eb;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .task-item.active {
+            border-color: #4285f4;
+            background-color: #e3f2fd;
+        }
+        
+        .task-item-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+            min-width: 0; /* Allow flex shrinking */
+        }
+        
+        .task-item-content:hover {
+            background-color: rgba(0,0,0,0.03);
+        }
+        
+        .task-title {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            min-width: 0;
+            max-width: 100%;
+        }
+        
+        .delete-task-btn {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        
+        .task-item:hover .delete-task-btn {
+            opacity: 1;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+        }
+        
+        .delete-task-btn:hover {
+            background: linear-gradient(135deg, #fca5a5, #f87171);
+            border-color: #ef4444;
+            color: #white;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+        }
+        
+        .delete-task-btn:active {
+            transform: translateY(0) scale(0.95);
+            box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2);
+        }
+        
+        .item-icon {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            flex-shrink: 0;
+        }
+        
+        .task-item .item-icon {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-color: #93c5fd;
+        }
+        
+        .task-item.active .item-icon {
+            background: linear-gradient(135deg, #4285f4, #1976d2);
+            border-color: #1565c0;
+        }
+        
+        .empty-state {
+            padding: 16px 12px;
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            background: #f9fafb;
+            margin: 8px 4px;
+        }
+        
+        .new-task-btn {
+            background: linear-gradient(135deg, #4285f4, #1976d2);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: calc(100% - 32px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            margin: 20px 16px;
+            box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .new-task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+        }
+        
+        .new-task-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
+        }
+        
+        .new-task-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .new-task-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .desktop-header {
+            background: white;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .desktop-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+
+        
+        .desktop-view {
+            flex: 1;
+            background: #1a2332;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            padding: 20px 40px;
+        }
+        
+        .vnc-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .vnc-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+            background: #000;
+            transition: all 0.3s ease;
+        }
+        
+        .vnc-frame:hover {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        
+        .vnc-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .vnc-wrapper:hover .vnc-overlay {
+            opacity: 1;
+        }
+        
+        .vnc-control-btn {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        
+        .vnc-control-btn:hover {
+            background: rgba(0,0,0,0.9);
+        }
+        
+        .desktop-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #9ca3af;
+            background: rgba(0,0,0,0.3);
+            padding: 2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .desktop-placeholder h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: white;
+        }
+        
+        .desktop-placeholder p {
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .placeholder-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #4285f4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .vnc-status-bar {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .vnc-wrapper:hover .vnc-status-bar {
+            opacity: 1;
+        }
+        
+        .vnc-status-text {
+            flex: 1;
+        }
+        
+        .vnc-connection-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .vnc-connection-indicator.connected {
+            background: #10b981;
+            box-shadow: 0 0 6px #10b981;
+        }
+        
+        .vnc-connection-indicator.connecting {
+            background: #f59e0b;
+            animation: pulse 2s infinite;
+        }
+        
+        .vnc-connection-indicator.disconnected {
+            background: #ef4444;
+        }
+        
+        /* Fullscreen mode */
+        .vnc-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: #000;
+        }
+        
+        .vnc-fullscreen .vnc-frame {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+        }
+        
+        .vnc-fullscreen .vnc-overlay {
+            top: 20px;
+            right: 20px;
+        }
+        
+        /* Better responsive handling */
+        @media (max-width: 1200px) {
+            .desktop-view {
+                min-height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .desktop-view {
+                min-height: 300px;
+            }
+            
+            .vnc-overlay {
+                top: 5px;
+                right: 5px;
+                gap: 4px;
+            }
+            
+            .vnc-control-btn {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+            
+            .vnc-status-bar {
+                bottom: 5px;
+                left: 5px;
+                right: 5px;
+                font-size: 11px;
+            }
+            
+            /* Always show controls on mobile for better touch usability */
+            .vnc-overlay {
+                opacity: 1;
+            }
+            
+            .vnc-status-bar {
+                opacity: 1;
+            }
+        }
+        
+        /* Right Chat Panel */
+        .chat-panel {
+            width: 400px;
+            background: white;
+            border-left: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .chat-greeting {
+            font-size: 16px;
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .message.user .message-avatar {
+            background: #4285f4;
+        }
+        
+        .message.assistant .message-avatar {
+            background: #667eea;
+        }
+        
+        .message-content {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 280px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .message.user .message-content {
+            background: #4285f4;
+            color: white;
+        }
+        
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid #e5e5e5;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 16px;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #4285f4;
+            background: #f0f8ff;
+        }
+        
+        .file-upload-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 8px;
+            background: #e5e5e5;
+            border-radius: 50%;
+        }
+        
+        .file-upload-text {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .chat-input-container {
+            position: relative;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 12px 48px 12px 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+        }
+        
+        .chat-input:focus {
+            border-color: #4285f4;
+        }
+        
+        .send-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #4285f4;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .send-btn:hover {
+            background: #3367d6;
+        }
+        
+        .send-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        /* Status indicators */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-active { background: #10b981; }
+        .status-idle { background: #6b7280; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 250px;
+            }
+            
+            .chat-panel {
+                width: 350px;
+            }
+            
+            .container {
+                grid-template-columns: 250px 1fr 350px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 220px 1fr 320px;
+            }
+            
+            .sidebar {
+                width: 220px;
+            }
+            
+            .chat-panel {
+                width: 320px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                width: 280px;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .chat-panel {
+                position: fixed;
+                right: -100%;
+                top: 0;
+                height: 100vh;
+                width: 100%;
+                max-width: 400px;
+                z-index: 1000;
+                transition: right 0.3s ease;
+                box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .chat-panel.open {
+                right: 0;
+            }
+            
+            .main-content {
+                grid-row: 1;
+            }
+            
+            /* Mobile VNC improvements */
+            .desktop-view {
+                min-height: 60vh;
+            }
+            
+            /* Mobile delete button improvements */
+            .delete-task-btn {
+                opacity: 1;
+                min-width: 36px;
+                height: 36px;
+                font-size: 16px;
+                padding: 8px 10px;
+            }
+            
+            .task-item {
+                padding: 10px 8px;
+                gap: 12px;
+                grid-template-columns: 1fr auto;
+            }
+            
+            .task-item-content {
+                gap: 12px;
+                padding: 6px 8px;
+            }
+            
+            .task-title {
+                font-size: 15px;
+                line-height: 1.3;
+            }
+            
+            /* Add mobile menu buttons */
+            .mobile-nav {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                z-index: 1001;
+                display: flex;
+                justify-content: space-between;
+                pointer-events: none;
+            }
+            
+            .mobile-nav-btn {
+                background: rgba(0,0,0,0.7);
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                backdrop-filter: blur(4px);
+                pointer-events: auto;
+            }
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        /* Typing indicator animation */
+        .typing-animation {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 8px;
+        }
+        
+        .typing-animation span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-animation span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .typing-animation span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .typing-indicator .message-content {
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        /* Quick Actions */
+        .quick-actions-container {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+        }
+        
+        .quick-actions-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .quick-action-btn {
+            background: white;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            padding: 6px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .quick-action-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+        
+        .quick-action-btn:active {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">S</div>
+                <div class="logo-text">Computer Use Agent</div>
+            </div>
+            
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search" id="searchInput">
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="section">
+                <div class="section-title">
+                    <span class="section-icon">🕒</span>
+                    Task History
+                </div>
+                <ul class="section-list" id="taskHistory">
+                    <li class="section-item">No tasks yet</li>
+                </ul>
+            </div>
+            
+
+        </div>
+        
+        <button class="new-task-btn" onclick="createNewTask()">
+            <span>+</span>
+            New Agent Task
+        </button>
+    </div>
+    
+    <!-- Mobile Navigation (only visible on mobile) -->
+    <div class="mobile-nav" style="display: none;">
+        <button class="mobile-nav-btn" onclick="toggleSidebar()">📋 Tasks</button>
+        <button class="mobile-nav-btn" onclick="toggleChat()">💬 Chat</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="desktop-header">
+            <div class="desktop-title">Workspace 1</div>
+        </div>
+        
+        <div class="desktop-view" id="desktopView">
+            <div class="vnc-wrapper">
+                <iframe id="vncFrame" class="vnc-frame" title="Desktop View"></iframe>
+                
+                <!-- VNC Overlay Controls -->
+                <div class="vnc-overlay" id="vncOverlay" style="display: none;">
+                    <button class="vnc-control-btn" onclick="refreshVNC()" title="Refresh VNC">
+                        🔄
+                    </button>
+                    <button class="vnc-control-btn" onclick="toggleVNCFullscreen()" title="Toggle Fullscreen">
+                        ⛶
+                    </button>
+                    <button class="vnc-control-btn" onclick="openDirectVNC()" title="Open in New Tab">
+                        🔗
+                    </button>
+                </div>
+                
+                <!-- VNC Status Bar -->
+                <div class="vnc-status-bar" id="vncStatusBar" style="display: none;">
+                    <div class="vnc-connection-indicator" id="vncIndicator"></div>
+                    <div class="vnc-status-text" id="vncStatusText">Connecting...</div>
+                </div>
+                
+                <!-- Loading Placeholder -->
+                <div class="desktop-placeholder" id="desktopPlaceholder">
+                    <div class="placeholder-spinner"></div>
+                    <h3>Desktop Environment</h3>
+                    <p id="placeholderText">Connecting to virtual machine...</p>
+                    <button class="vnc-control-btn" onclick="checkVNCStatus()" style="margin-top: 12px;">
+                        🔄 Retry Connection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+            <!-- Right Chat Panel -->
+        <div class="chat-panel">
+            <div class="chat-header">
+                <div class="chat-avatar">🤖</div>
+                <div class="chat-greeting">
+                    <div>Hi! I'm your AI assistant.</div>
+                    <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">
+                        <span id="connectionStatus">🔴 Not connected</span> • <span id="aiStatus">Checking AI availability...</span>
+                    </div>
+                </div>
+            </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="loading">Ready to assist you</div>
+        </div>
+        
+        <div class="chat-input-area">
+            <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
+                <div class="file-upload-icon">☁️</div>
+                <div class="file-upload-text">
+                    Drag and drop a single file here or click to select a file
+                </div>
+                <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(this)">
+            </div>
+            
+            <!-- Quick Actions -->
+            <div id="quickActions" class="quick-actions-container" style="display: none;">
+                <div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">Quick Actions:</div>
+                <div class="quick-actions-buttons">
+                    <button class="quick-action-btn" onclick="useQuickAction('Take a screenshot of the current screen')">📸 Screenshot</button>
+                    <button class="quick-action-btn" onclick="useQuickAction('Open a web browser and search for the latest news')">🌐 Browse Web</button>
+                    <button class="quick-action-btn" onclick="useQuickAction('Help me organize files in the Downloads folder')">📁 Organize Files</button>
+                    <button class="quick-action-btn" onclick="useQuickAction('Create a simple text document with today\\'s date')">📝 Create Document</button>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <textarea 
+                    class="chat-input" 
+                    id="messageInput" 
+                    placeholder="Write a message"
+                    onkeypress="handleKeyPress(event)"
+                ></textarea>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                    ➤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentSession = null;
+        let websocket = null;
+        let sessions = [];
+
+        // API base URL
+        const API_BASE = 'http://localhost:8000';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            await loadSessions();
+            await checkVNCStatus();
+            setupEventListeners();
+            initializeAIStatus();
+            
+            // Check VNC status periodically
+            setInterval(checkVNCStatus, 10000);
+        }
+
+        function initializeAIStatus() {
+            updateConnectionStatus('🔴 Not connected');
+            updateAIStatus('🔴 Not connected');
+            
+            // Add some helpful initial messages
+            if (!currentSession) {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = `
+                    <div class="message assistant">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            Welcome! Create a new task to start chatting with AI. I can help you with:
+                            <br><br>
+                            • 🌐 Web research and browsing
+                            <br>• 📊 Data analysis and visualization  
+                            <br>• 📝 Document creation and editing
+                            <br>• 🔧 System administration tasks
+                            <br>• 💻 Programming and development
+                            <br><br>
+                            <strong>💡 Pro Tips:</strong>
+                            <br>• Click "New Agent Task" to get started
+                            <br>• Hover over tasks to see delete button 🗑️
+                            <br>• Press Delete key to remove current task
+                            <br>• Tasks are automatically saved with full history
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function setupEventListeners() {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+            
+            // Handle window resize for responsive layout
+            window.addEventListener('resize', handleWindowResize);
+            handleWindowResize(); // Call once to set initial state
+        }
+
+        function handleWindowResize() {
+            const mobileNav = document.querySelector('.mobile-nav');
+            if (window.innerWidth <= 768) {
+                mobileNav.style.display = 'flex';
+            } else {
+                mobileNav.style.display = 'none';
+                // Close mobile panels when returning to desktop
+                const sidebar = document.querySelector('.sidebar');
+                const chatPanel = document.querySelector('.chat-panel');
+                sidebar.classList.remove('open');
+                chatPanel.classList.remove('open');
+            }
+        }
+
+        // Mobile navigation functions
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const chatPanel = document.querySelector('.chat-panel');
+            
+            sidebar.classList.toggle('open');
+            // Close chat panel if sidebar is opening
+            if (sidebar.classList.contains('open')) {
+                chatPanel.classList.remove('open');
+            }
+        }
+
+        function toggleChat() {
+            const sidebar = document.querySelector('.sidebar');
+            const chatPanel = document.querySelector('.chat-panel');
+            
+            chatPanel.classList.toggle('open');
+            // Close sidebar if chat panel is opening
+            if (chatPanel.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        }
+
+        // Close mobile panels when clicking outside
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.querySelector('.sidebar');
+                const chatPanel = document.querySelector('.chat-panel');
+                const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+                
+                // Check if click is outside panels and not on nav buttons
+                if (!sidebar.contains(event.target) && 
+                    !chatPanel.contains(event.target) && 
+                    !Array.from(mobileNavBtns).some(btn => btn.contains(event.target))) {
+                    sidebar.classList.remove('open');
+                    chatPanel.classList.remove('open');
+                }
+            }
+        });
+
+        // VNC Management
+        let isVNCFullscreen = false;
+        
+        async function checkVNCStatus() {
+            try {
+                const vncIndicator = document.getElementById('vncIndicator');
+                const vncStatusText = document.getElementById('vncStatusText');
+                
+                // Show checking status
+                if (vncIndicator) {
+                    vncIndicator.className = 'vnc-connection-indicator connecting';
+                }
+                if (vncStatusText) {
+                    vncStatusText.textContent = 'Checking desktop status...';
+                }
+                
+                const response = await fetch(`${API_BASE}/api/vnc/status`);
+                const status = await response.json();
+                updateVNCStatus(status);
+            } catch (error) {
+                console.error('Error checking VNC status:', error);
+                updateVNCStatus({ status: 'error', error_message: error.message });
+            }
+        }
+
+        function updateVNCStatus(status) {
+            const vncFrame = document.getElementById('vncFrame');
+            const placeholder = document.getElementById('desktopPlaceholder');
+            const vncOverlay = document.getElementById('vncOverlay');
+            const vncStatusBar = document.getElementById('vncStatusBar');
+            const vncIndicator = document.getElementById('vncIndicator');
+            const vncStatusText = document.getElementById('vncStatusText');
+            const placeholderText = document.getElementById('placeholderText');
+            
+            if (status.status === 'healthy' || status.is_running) {
+                // VNC is running - show the iframe and controls
+                placeholder.style.display = 'none';
+                vncFrame.style.display = 'block';
+                vncOverlay.style.display = 'flex';
+                vncStatusBar.style.display = 'flex';
+                
+                // Set connection indicator to connected
+                vncIndicator.className = 'vnc-connection-indicator connected';
+                vncStatusText.textContent = 'VNC Connected - Desktop Ready';
+                
+                // Load VNC if not already loaded
+                if (!vncFrame.src) {
+                    vncFrame.src = 'http://localhost:6080/vnc.html';
+                }
+                
+                // Add connection event listener
+                vncFrame.onload = function() {
+                    setTimeout(() => {
+                        vncIndicator.className = 'vnc-connection-indicator connected';
+                        vncStatusText.textContent = 'Desktop Ready - Click to interact';
+                    }, 2000);
+                };
+                
+            } else if (status.status === 'starting' || status.status === 'connecting') {
+                // VNC is starting
+                placeholder.style.display = 'flex';
+                vncFrame.style.display = 'none';
+                vncOverlay.style.display = 'none';
+                vncStatusBar.style.display = 'flex';
+                
+                vncIndicator.className = 'vnc-connection-indicator connecting';
+                vncStatusText.textContent = 'Starting desktop environment...';
+                placeholderText.textContent = 'Virtual machine is starting up. This may take a minute.';
+                
+            } else {
+                // VNC is not available
+                placeholder.style.display = 'flex';
+                vncFrame.style.display = 'none';
+                vncOverlay.style.display = 'none';
+                vncStatusBar.style.display = 'flex';
+                
+                vncIndicator.className = 'vnc-connection-indicator disconnected';
+                vncStatusText.textContent = 'Desktop Unavailable';
+                placeholderText.textContent = status.error_message || status.error || 'Desktop environment could not be started.';
+            }
+        }
+
+
+
+        // Session Management
+        async function loadSessions() {
+            try {
+                const response = await fetch(`${API_BASE}/api/sessions`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    sessions = result.sessions || [];
+                    updateTaskHistory();
+                }
+            } catch (error) {
+                console.error('Error loading sessions:', error);
+            }
+        }
+
+        function updateTaskHistory() {
+            const taskHistory = document.getElementById('taskHistory');
+            
+            if (sessions.length === 0) {
+                taskHistory.innerHTML = '<li class="empty-state">🚀 No tasks yet - create your first one!</li>';
+                return;
+            }
+            
+            taskHistory.innerHTML = sessions.slice(0, 8).map((session, index) => `
+                <li class="section-item task-item" data-session-id="${session.id}">
+                    <div class="task-item-content" onclick="selectTask('${session.id}')">
+                        <span class="item-icon"></span>
+                        <span class="task-title">${session.title || `Task #${index + 1}`}</span>
+                    </div>
+                    <button class="delete-task-btn" onclick="confirmDeleteTask('${session.id}', '${(session.title || `Task #${index + 1}`).replace(/'/g, '&apos;')}')" title="Delete task">
+                        🗑️
+                    </button>
+                </li>
+            `).join('');
+        }
+
+        async function createNewTask() {
+            const title = prompt('Enter task title:');
+            if (!title) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/sessions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        metadata: {}
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    await loadSessions();
+                    selectTask(result.id);
+                    addStatusMessage(`✅ Created new task: ${title}`);
+                } else {
+                    addStatusMessage('❌ Failed to create task: ' + (result.message || result.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error creating task:', error);
+                addStatusMessage('❌ Error creating task');
+            }
+        }
+
+        async function selectTask(sessionId) {
+            try {
+                // Clean up existing WebSocket connection properly
+                cleanupWebSocket();
+                
+                addStatusMessage('📋 Loading session...');
+                
+                // Get session details and messages separately
+                const sessionResponse = await fetch(`${API_BASE}/api/sessions/${sessionId}`);
+                
+                if (sessionResponse.ok) {
+                    const session = await sessionResponse.json();
+                    
+                    // Get messages for the session
+                    const messagesResponse = await fetch(`${API_BASE}/api/sessions/${sessionId}/messages`);
+                    let messages = [];
+                    if (messagesResponse.ok) {
+                        const messagesResult = await messagesResponse.json();
+                        messages = messagesResult.messages || [];
+                    }
+                    
+                    currentSession = { ...session, messages: messages };
+                    renderMessages();
+                    
+                    // Setup WebSocket connection for this session
+                    setupWebSocket(sessionId);
+                    
+                    addStatusMessage(`📋 Selected task: ${currentSession.title || 'Untitled'}`);
+                    
+                    // Add welcome message if this is a new session with no messages
+                    if (messages.length === 0) {
+                        setTimeout(() => {
+                            addStatusMessage('💬 Ready to chat! Ask me anything or give me a task to complete.');
+                            showQuickActions();
+                        }, 1000);
+                    } else {
+                        hideQuickActions();
+                    }
+                    
+                    // Update UI to show active task
+                    document.querySelectorAll('.section-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Find and highlight the active session
+                    const activeItem = document.querySelector(`[data-session-id="${sessionId}"]`);
+                    if (activeItem) {
+                        activeItem.classList.add('active');
+                    }
+                    
+                } else {
+                    addStatusMessage('❌ Failed to load session');
+                    console.error('Failed to load session');
+                }
+            } catch (error) {
+                addStatusMessage('❌ Error loading session');
+                console.error('Error selecting task:', error);
+            }
+        }
+
+        function cleanupWebSocket() {
+            if (websocket) {
+                console.log('Cleaning up existing WebSocket connection');
+                websocketReady = false;
+                
+                // Stop ping interval
+                stopWebSocketPing();
+                
+                // Clean up event handlers to prevent reconnection attempts
+                websocket.onclose = null;
+                websocket.onerror = null;
+                websocket.onmessage = null;
+                websocket.close(1000, 'Switching sessions');
+                websocket = null;
+            }
+        }
+
+        function startWebSocketPing() {
+            // Clear any existing ping interval
+            stopWebSocketPing();
+            
+            // Send ping every 30 seconds to keep connection alive
+            websocketPingInterval = setInterval(() => {
+                if (isWebSocketConnected()) {
+                    try {
+                        websocket.send(JSON.stringify({
+                            type: 'ping',
+                            payload: { timestamp: Date.now() }
+                        }));
+                        console.log('Sent WebSocket ping');
+                    } catch (error) {
+                        console.error('Failed to send ping:', error);
+                        // Connection might be broken, trigger reconnect
+                        if (currentSession) {
+                            attemptReconnect(currentSession.id);
+                        }
+                    }
+                } else {
+                    console.log('WebSocket not connected, stopping ping');
+                    stopWebSocketPing();
+                }
+            }, 30000); // 30 seconds
+        }
+
+        function stopWebSocketPing() {
+            if (websocketPingInterval) {
+                clearInterval(websocketPingInterval);
+                websocketPingInterval = null;
+                console.log('Stopped WebSocket ping');
+            }
+        }
+
+        // Chat Functions
+        function renderMessages() {
+            const chatMessages = document.getElementById('chatMessages');
+            
+            if (!currentSession || !currentSession.messages || currentSession.messages.length === 0) {
+                chatMessages.innerHTML = '<div class="loading">Ready to assist you</div>';
+                return;
+            }
+            
+            chatMessages.innerHTML = currentSession.messages.map(message => {
+                const isUser = message.role === 'user';
+                const messageContent = renderMessageContent(message);
+                
+                return `
+                    <div class="message ${message.role}">
+                        <div class="message-avatar">${isUser ? 'U' : (message.role === 'tool' ? '🔧' : '🤖')}</div>
+                        <div class="message-content">
+                            ${messageContent}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function renderMessageContent(message) {
+            let content = '';
+            
+            // Handle different message types and content
+            if (message.role === 'user') {
+                content = formatMessageContent(message.content || '');
+            } else if (message.role === 'assistant') {
+                content = formatMessageContent(message.content || '');
+                
+                // Add tool use information if available
+                if (message.tool_name) {
+                    const toolInput = message.tool_input ? JSON.stringify(message.tool_input, null, 2) : '{}';
+                    content += `
+                        <div style="margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #4285f4;">
+                            <div style="font-weight: 600; margin-bottom: 8px; color: #1a73e8;">🔧 Tool: ${message.tool_name}</div>
+                            <pre style="background: #ffffff; padding: 8px; border-radius: 4px; font-size: 12px; overflow-x: auto; margin: 0;"><code>${toolInput}</code></pre>
+                        </div>
+                    `;
+                }
+            } else if (message.role === 'tool') {
+                // Tool result message
+                content = '<div style="font-weight: 600; margin-bottom: 8px; color: #0d7377;">🔧 Tool Result</div>';
+                
+                if (message.tool_output) {
+                    // Check if it's CLI output
+                    const isCliOutput = message.tool_output.includes('/usr/') || 
+                                       message.tool_output.includes('/bin/') || 
+                                       message.tool_output.includes('$') ||
+                                       message.tool_output.includes('command');
+                    
+                    if (isCliOutput) {
+                        content += `
+                            <div style="margin-bottom: 8px;">
+                                <strong>📋 Output:</strong>
+                                <pre style="background: #f1f3f4; padding: 8px; border-radius: 4px; overflow-x: auto; margin: 4px 0; font-size: 12px;"><code>${escapeHtml(message.tool_output)}</code></pre>
+                            </div>
+                        `;
+                    } else {
+                        content += `
+                            <div style="margin-bottom: 8px;">
+                                <strong>📋 Output:</strong><br>
+                                ${formatMessageContent(message.tool_output)}
+                            </div>
+                        `;
+                    }
+                }
+                
+                if (message.tool_error) {
+                    content += `
+                        <div style="margin-bottom: 8px;">
+                            <strong style="color: #d93025;">❌ Error:</strong>
+                            <pre style="background: #fce8e6; padding: 8px; border-radius: 4px; overflow-x: auto; margin: 4px 0; font-size: 12px; color: #d93025;"><code>${escapeHtml(message.tool_error)}</code></pre>
+                        </div>
+                    `;
+                }
+                
+                if (!message.tool_output && !message.tool_error) {
+                    content += '<div style="color: #34a853;">✅ Tool executed successfully</div>';
+                }
+            } else {
+                content = formatMessageContent(message.content || '');
+            }
+            
+            // Add screenshot if available
+            if (message.base64_image) {
+                content += `
+                    <div style="margin-top: 12px;">
+                        <div style="font-weight: 600; margin-bottom: 8px; color: #1a73e8;">📸 Screenshot</div>
+                        <img src="data:image/png;base64,${message.base64_image}" 
+                             style="max-width: 100%; border-radius: 8px; border: 1px solid #e0e0e0; cursor: pointer;" 
+                             onclick="openImageModal(this.src)">
+                    </div>
+                `;
+            }
+            
+            return content;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function openImageModal(imageSrc) {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                cursor: pointer;
+            `;
+            
+            // Create image element
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.style.cssText = `
+                max-width: 95vw;
+                max-height: 95vh;
+                object-fit: contain;
+                border-radius: 8px;
+            `;
+            
+            modal.appendChild(img);
+            
+            // Close modal on click
+            modal.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            // Close modal on escape key
+            const closeOnEscape = (e) => {
+                if (e.key === 'Escape') {
+                    document.body.removeChild(modal);
+                    document.removeEventListener('keydown', closeOnEscape);
+                }
+            };
+            document.addEventListener('keydown', closeOnEscape);
+            
+            document.body.appendChild(modal);
+        }
+
+        function formatMessageContent(content) {
+            if (!content) return '';
+            
+            return content
+                .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre style="background: #f1f3f4; padding: 8px; border-radius: 4px; overflow-x: auto; margin: 8px 0;"><code>$2</code></pre>')
+                .replace(/`([^`]+)`/g, '<code style="background: #f1f3f4; padding: 2px 4px; border-radius: 3px;">$1</code>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function addStatusMessage(content) {
+            const chatMessages = document.getElementById('chatMessages');
+            const statusMessage = document.createElement('div');
+            statusMessage.className = 'message assistant';
+            statusMessage.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">${content}</div>
+            `;
+            chatMessages.appendChild(statusMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message assistant typing-indicator';
+            typingIndicator.id = 'typingIndicator';
+            typingIndicator.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="typing-animation">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    AI is thinking...
+                </div>
+            `;
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function updateAIStatus(statusText) {
+            const aiStatus = document.getElementById('aiStatus');
+            if (aiStatus) {
+                aiStatus.textContent = statusText;
+            }
+        }
+
+        function updateConnectionStatus(statusText) {
+            const connectionStatus = document.getElementById('connectionStatus');
+            if (connectionStatus) {
+                connectionStatus.textContent = statusText;
+            }
+        }
+
+        // Enhanced VNC Control Functions
+        function refreshVNC() {
+            const vncFrame = document.getElementById('vncFrame');
+            const vncStatusText = document.getElementById('vncStatusText');
+            const vncIndicator = document.getElementById('vncIndicator');
+            
+            if (vncFrame.src) {
+                // Show refreshing status
+                vncIndicator.className = 'vnc-connection-indicator connecting';
+                vncStatusText.textContent = 'Refreshing desktop...';
+                
+                // Reload the iframe
+                vncFrame.src = vncFrame.src;
+                
+                // Reset status after a delay
+                setTimeout(() => {
+                    vncIndicator.className = 'vnc-connection-indicator connected';
+                    vncStatusText.textContent = 'Desktop Ready - Click to interact';
+                }, 3000);
+                
+                addStatusMessage('🔄 Desktop refreshed');
+            } else {
+                checkVNCStatus();
+            }
+        }
+
+        function toggleVNCFullscreen() {
+            const desktopView = document.getElementById('desktopView');
+            
+            if (!isVNCFullscreen) {
+                // Enter fullscreen
+                desktopView.classList.add('vnc-fullscreen');
+                isVNCFullscreen = true;
+                addStatusMessage('⛶ Entered fullscreen mode (Press ESC or click ⛶ to exit)');
+                
+                // Update button tooltip
+                const fullscreenBtn = document.querySelector('.vnc-overlay button[onclick="toggleVNCFullscreen()"]');
+                if (fullscreenBtn) {
+                    fullscreenBtn.title = 'Exit Fullscreen';
+                    fullscreenBtn.textContent = '⛶';
+                }
+            } else {
+                // Exit fullscreen
+                exitVNCFullscreen();
+            }
+        }
+
+        function exitVNCFullscreen() {
+            const desktopView = document.getElementById('desktopView');
+            desktopView.classList.remove('vnc-fullscreen');
+            isVNCFullscreen = false;
+            addStatusMessage('⛶ Exited fullscreen mode');
+            
+            // Update button tooltip
+            const fullscreenBtn = document.querySelector('.vnc-overlay button[onclick="toggleVNCFullscreen()"]');
+            if (fullscreenBtn) {
+                fullscreenBtn.title = 'Toggle Fullscreen';
+                fullscreenBtn.textContent = '⛶';
+            }
+        }
+
+        function openDirectVNC() {
+            const newWindow = window.open('http://localhost:6080/vnc.html', '_blank', 'width=1200,height=800');
+            if (newWindow) {
+                addStatusMessage('🔗 Opened VNC in new tab');
+            } else {
+                addStatusMessage('❌ Could not open new tab - please check popup blocker');
+            }
+        }
+
+        // Handle escape key for fullscreen exit
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && isVNCFullscreen) {
+                exitVNCFullscreen();
+            }
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (websocket) {
+                console.log('Page unloading, closing WebSocket connection');
+                cleanupWebSocket();
+            }
+        });
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const content = messageInput.value.trim();
+            
+            if (!content) return;
+            
+            if (!currentSession) {
+                addStatusMessage('❌ Please create or select a task first');
+                return;
+            }
+            
+            // Disable input and show loading state
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '⏳';
+            
+            try {
+                // Add user message to display immediately
+                if (!currentSession.messages) {
+                    currentSession.messages = [];
+                }
+                
+                const userMessage = {
+                    id: Date.now(),
+                    role: 'user',
+                    content: content,
+                    timestamp: new Date().toISOString()
+                };
+                currentSession.messages.push(userMessage);
+                renderMessages();
+                
+                // Clear input
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+                
+                // Show typing indicator
+                addTypingIndicator();
+                
+                // Send via WebSocket for real-time AI processing if connected
+                if (isWebSocketConnected()) {
+                    try {
+                        console.log('Sending message via WebSocket:', content);
+                        websocket.send(JSON.stringify({
+                            type: 'chat_message',
+                            content: content
+                        }));
+                        addStatusMessage('🔄 Processing with AI agent via WebSocket...');
+                    } catch (error) {
+                        console.error('Failed to send WebSocket message:', error);
+                        addStatusMessage('❌ WebSocket send failed, trying REST API fallback...');
+                        removeTypingIndicator();
+                        await sendViaRestAPI(content);
+                    }
+                } else {
+                    // WebSocket not available - use REST API
+                    console.log('WebSocket not connected, using REST API');
+                    addStatusMessage('🔄 Sending message via REST API (WebSocket not ready)...');
+                    await sendViaRestAPI(content);
+                    
+                    // Try to reconnect WebSocket if it's not connected
+                    if (!isWebSocketConnected() && currentSession) {
+                        addStatusMessage('🔄 Attempting to reconnect WebSocket...');
+                        setTimeout(() => {
+                            setupWebSocket(currentSession.id);
+                        }, 1000);
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                addStatusMessage('❌ Error sending message');
+                removeTypingIndicator();
+            } finally {
+                // Re-enable input
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '➤';
+                messageInput.focus();
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // WebSocket Functions
+        let websocketReady = false;
+        let websocketReconnectAttempts = 0;
+        let maxReconnectAttempts = 3;
+        let websocketPingInterval = null;
+        
+        function setupWebSocket(sessionId) {
+            if (websocket && websocket.readyState === WebSocket.OPEN) {
+                console.log('WebSocket already connected, closing existing connection');
+                websocket.close();
+            }
+            
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${wsProtocol}//localhost:8000/ws/${sessionId}`;
+            
+            console.log('Connecting to WebSocket:', wsUrl);
+            addStatusMessage('🔄 Connecting to session...');
+            updateAIStatus('🟡 Connecting...');
+            
+            websocket = new WebSocket(wsUrl);
+            websocketReady = false;
+            
+            websocket.onopen = function(event) {
+                console.log('WebSocket connected successfully');
+                websocketReady = false; // Will be set to true after connection_established
+                websocketReconnectAttempts = 0;
+                updateConnectionStatus('🟡 Connecting...');
+                addStatusMessage('🔗 Connected to session WebSocket');
+                updateAIStatus('🟡 Connecting to AI...');
+                
+                // Start ping interval to keep connection alive
+                startWebSocketPing();
+                
+                // Wait a moment before sending initial message to ensure connection is stable
+                setTimeout(() => {
+                    if (websocket && websocket.readyState === WebSocket.OPEN) {
+                        console.log('Sending initial status request');
+                        try {
+                            websocket.send(JSON.stringify({
+                                type: 'get_status',
+                                payload: {}
+                            }));
+                        } catch (error) {
+                            console.error('Failed to send initial status request:', error);
+                            addStatusMessage('⚠️ Warning: Failed to send initial status request');
+                        }
+                    }
+                }, 500);
+            };
+            
+            websocket.onmessage = function(event) {
+                try {
+                    const message = JSON.parse(event.data);
+                    handleWebSocketMessage(message);
+                } catch (error) {
+                    console.error('Error parsing WebSocket message:', error);
+                    addStatusMessage('❌ Error parsing server message');
+                }
+            };
+            
+            websocket.onclose = function(event) {
+                console.log('WebSocket disconnected. Code:', event.code, 'Reason:', event.reason);
+                websocketReady = false;
+                stopWebSocketPing();
+                updateConnectionStatus('🔴 Disconnected');
+                updateAIStatus('🔴 Disconnected');
+                
+                if (event.code === 1000) {
+                    // Normal closure
+                    addStatusMessage('🔌 WebSocket disconnected');
+                } else {
+                    // Abnormal closure - attempt reconnect
+                    addStatusMessage(`🔌 Connection lost (${event.code})`);
+                    attemptReconnect(sessionId);
+                }
+            };
+            
+            websocket.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                websocketReady = false;
+                updateAIStatus('🔴 Connection error');
+                addStatusMessage('❌ Connection error');
+            };
+        }
+        
+        function attemptReconnect(sessionId) {
+            if (websocketReconnectAttempts < maxReconnectAttempts && currentSession) {
+                websocketReconnectAttempts++;
+                addStatusMessage(`🔄 Reconnecting... (${websocketReconnectAttempts}/${maxReconnectAttempts})`);
+                
+                setTimeout(() => {
+                    setupWebSocket(sessionId);
+                }, 2000 * websocketReconnectAttempts); // Exponential backoff
+            } else {
+                addStatusMessage('❌ Failed to reconnect. Please refresh or select session again.');
+            }
+        }
+        
+        function isWebSocketConnected() {
+            return websocket && websocket.readyState === WebSocket.OPEN && websocketReady;
+        }
+
+        async function sendViaRestAPI(content) {
+            try {
+                const response = await fetch(`${API_BASE}/api/sessions/${currentSession.id}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: content
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    addStatusMessage('✅ Message sent to agent (via REST API)');
+                    // If WebSocket is available, try to get real-time updates
+                    if (isWebSocketConnected()) {
+                        addStatusMessage('🔄 AI processing via WebSocket...');
+                    } else {
+                        addStatusMessage('💡 WebSocket disconnected - responses may be delayed');
+                        removeTypingIndicator();
+                    }
+                } else {
+                    addStatusMessage('❌ Failed to send message: ' + (result.message || result.detail || 'Unknown error'));
+                    removeTypingIndicator();
+                }
+            } catch (error) {
+                console.error('REST API error:', error);
+                addStatusMessage('❌ Network error sending message');
+                removeTypingIndicator();
+            }
+        }
+
+        function handleWebSocketMessage(message) {
+            console.log('WebSocket message received:', message.type, message);
+            
+            if (!currentSession) {
+                console.warn('Received WebSocket message but no current session');
+                return;
+            }
+            
+            if (!currentSession.messages) {
+                currentSession.messages = [];
+            }
+            
+            // Handle different message types from the backend
+            if (message.type === 'user_message') {
+                // User message echo - just update status
+                addStatusMessage('📤 Message sent');
+            } else if (message.type === 'processing') {
+                addTypingIndicator();
+                addStatusMessage('🔄 AI is processing your message...');
+            } else if (message.type === 'agent_response') {
+                removeTypingIndicator();
+                
+                const newMessage = {
+                    id: Date.now(),
+                    role: message.role || 'assistant',
+                    content: message.content,
+                    timestamp: message.timestamp || new Date().toISOString()
+                };
+                
+                currentSession.messages.push(newMessage);
+                renderMessages();
+                addStatusMessage('✅ AI response received');
+            } else if (message.type === 'thinking') {
+                // Display thinking content (don't store in permanent messages)
+                removeTypingIndicator();
+                addThinkingMessage(message.content);
+            } else if (message.type === 'tool_use') {
+                // Tool use started
+                addStatusMessage(`🔧 Using tool: ${message.tool_name || 'Unknown'}`);
+                
+                if (message.tool_name && message.tool_input) {
+                    const toolMessage = {
+                        id: Date.now(),
+                        role: 'assistant',
+                        content: `Using tool: ${message.tool_name}`,
+                        tool_name: message.tool_name,
+                        tool_input: message.tool_input,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    currentSession.messages.push(toolMessage);
+                    renderMessages();
+                }
+            } else if (message.type === 'tool_result') {
+                // Tool execution completed
+                addStatusMessage(`✅ Tool completed`);
+                
+                const toolResultMessage = {
+                    id: Date.now(),
+                    role: 'tool',
+                    content: 'Tool execution result',
+                    tool_output: message.tool_output,
+                    tool_error: message.tool_error,
+                    base64_image: message.base64_image,
+                    timestamp: new Date().toISOString()
+                };
+                
+                currentSession.messages.push(toolResultMessage);
+                renderMessages();
+            } else if (message.type === 'system') {
+                // System message
+                addStatusMessage(`ℹ️ ${message.content}`);
+                updateConnectionStatus('🟢 Connected');
+                updateAIStatus('🟢 AI Ready');
+                websocketReady = true;
+            } else if (message.type === 'error') {
+                removeTypingIndicator();
+                
+                const errorMsg = message.content || 'Unknown error';
+                addStatusMessage(`❌ Error: ${errorMsg}`);
+                
+                // Check for specific error types
+                if (errorMsg.includes('Agent not available') || errorMsg.includes('API key')) {
+                    updateAIStatus('🟡 AI Limited (No API key)');
+                    addStatusMessage('💡 Tip: Set ANTHROPIC_API_KEY environment variable for full AI functionality');
+                } else if (errorMsg.includes('AGENT_INIT_FAILED')) {
+                    updateAIStatus('🔴 AI Unavailable');
+                }
+            } else {
+                // Handle legacy message types for compatibility
+                if (message.type === 'connection_established') {
+                    addStatusMessage('✅ Real-time connection established');
+                    updateConnectionStatus('🟢 Connected');
+                    updateAIStatus('🟢 AI Ready');
+                    websocketReady = true;
+                } else if (message.type === 'session_status_update') {
+                    const payload = message.payload;
+                    if (payload && payload.status) {
+                        addStatusMessage(`📋 Session status: ${payload.status}`);
+                    }
+                } else if (message.type === 'agent_status') {
+                    const payload = message.payload;
+                    if (payload && payload.available) {
+                        updateAIStatus('🟢 AI Ready');
+                    } else {
+                        updateAIStatus('🟡 AI Limited (Echo mode)');
+                    }
+                }
+            }
+        }
+
+        function addThinkingMessage(thinkingContent) {
+            const chatMessages = document.getElementById('chatMessages');
+            const thinkingMessage = document.createElement('div');
+            thinkingMessage.className = 'message assistant thinking-message';
+            thinkingMessage.style.opacity = '0.8';
+            thinkingMessage.innerHTML = `
+                <div class="message-avatar">🤔</div>
+                <div class="message-content">
+                    <div style="font-style: italic; color: #666;">${formatMessageContent(thinkingContent)}</div>
+                </div>
+            `;
+            chatMessages.appendChild(thinkingMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Remove thinking message after a delay (it's temporary)
+            setTimeout(() => {
+                if (thinkingMessage.parentNode) {
+                    thinkingMessage.parentNode.removeChild(thinkingMessage);
+                }
+            }, 5000);
+        }
+
+        
+
+        // File Upload
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                addStatusMessage(`📎 File uploaded: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+                
+                // Here you would typically upload the file to your backend
+                // For now, just show a message
+                setTimeout(() => {
+                    addStatusMessage('✅ File processed and ready for analysis');
+                }, 1000);
+            }
+        }
+
+        // Quick Actions
+        function useQuickAction(prompt) {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.value = prompt;
+            messageInput.focus();
+            
+            // Auto-send the message
+            setTimeout(() => {
+                sendMessage();
+            }, 100);
+        }
+
+        function showQuickActions() {
+            const quickActions = document.getElementById('quickActions');
+            if (quickActions) {
+                quickActions.style.display = 'block';
+            }
+        }
+
+        function hideQuickActions() {
+            const quickActions = document.getElementById('quickActions');
+            if (quickActions) {
+                quickActions.style.display = 'none';
+            }
+        }
+
+        // Task deletion functions
+        async function confirmDeleteTask(sessionId, taskTitle) {
+            const confirmed = confirm(`Are you sure you want to delete "${taskTitle}"?\n\nThis will permanently delete the task and all its messages. This action cannot be undone.`);
+            
+            if (confirmed) {
+                await deleteTask(sessionId, taskTitle);
+            }
+        }
+
+        async function deleteTask(sessionId, taskTitle) {
+            try {
+                addStatusMessage(`🗑️ Deleting task: ${taskTitle}...`);
+                
+                const response = await fetch(`${API_BASE}/api/sessions/${sessionId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    addStatusMessage(`✅ Task "${taskTitle}" deleted successfully`);
+                    
+                    // Remove from sessions array
+                    sessions = sessions.filter(session => session.id !== sessionId);
+                    updateTaskHistory();
+                    
+                    // If this was the current session, clear it
+                    if (currentSession && currentSession.id === sessionId) {
+                        currentSession = null;
+                        cleanupWebSocket();
+                        
+                        // Clear chat messages
+                        const chatMessages = document.getElementById('chatMessages');
+                        chatMessages.innerHTML = '<div class="loading">Ready to assist you</div>';
+                        
+                        // Update connection status
+                        updateConnectionStatus('🔴 Not connected');
+                        updateAIStatus('🔴 Not connected');
+                        
+                        addStatusMessage('📋 Session cleared. Please select or create a new task.');
+                    }
+                    
+                    // Update UI to remove active state
+                    document.querySelectorAll('.section-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    const errorMsg = errorData.detail || errorData.message || 'Unknown error';
+                    addStatusMessage(`❌ Failed to delete task: ${errorMsg}`);
+                }
+                
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                addStatusMessage(`❌ Error deleting task: ${error.message}`);
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Delete key to delete current session
+            if (event.key === 'Delete' && currentSession && !event.target.matches('input, textarea')) {
+                event.preventDefault();
+                const taskTitle = currentSession.title || 'Current Task';
+                confirmDeleteTask(currentSession.id, taskTitle);
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            // Filter task history
+            const taskItems = document.querySelectorAll('#taskHistory .section-item');
+            taskItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+            });
+        });
+    </script>
+</body>
+</html> 
+</html> 

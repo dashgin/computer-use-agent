@@ -1,0 +1,43 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: comp_use_postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=comp_use_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # ports:
+    #   - "5432:5432"
+    restart: unless-stopped
+
+  # Unified Computer Use Service (FastAPI + VNC)
+  comp_use_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: comp_use_unified
+    ports:
+      - "8000:8000"  # FastAPI Backend
+      - "6080:6080"  # noVNC web interface
+      - "5900:5900"  # VNC server
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:comp_use_password@postgres:5432/postgres
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - FASTAPI_ENV=${FASTAPI_ENV:-production}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - DISPLAY_NUM=1
+      - WIDTH=1024
+      - HEIGHT=768
+    depends_on:
+      - postgres
+        # condition: service_healthy
+  
+
+volumes:
+  postgres_data:
+    driver: local
+  comp_use_logs:
+    driver: local

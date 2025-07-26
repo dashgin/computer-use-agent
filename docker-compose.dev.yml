@@ -1,0 +1,29 @@
+# Development override for docker-compose
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"  # Expose PostgreSQL port for development access
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=comp_use_password
+
+  comp_use_service:
+    environment:
+      - FASTAPI_ENV=development
+      - LOG_LEVEL=debug
+      - DATABASE_URL=postgresql+asyncpg://postgres:comp_use_password@postgres:5432/postgres
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DISPLAY_NUM=1
+      - WIDTH=1024
+      - HEIGHT=768
+    # volumes:
+      # - ./app:/home/computeruse/app  # Enable hot reloading for FastAPI
+      # - ./computer_use_demo:/home/computeruse/computer_use_demo  # Development code
+      # - comp_use_logs:/home/computeruse/logs
+
+volumes:
+  postgres_data:
+  comp_use_logs: 

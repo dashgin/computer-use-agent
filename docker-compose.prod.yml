@@ -1,0 +1,55 @@
+# Production override for docker-compose
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+services:
+  postgres:
+    environment:
+      - POSTGRES_DB=postgres_prod
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-comp_use_password}
+    # Don't expose PostgreSQL port in production
+    ports: []
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  comp_use_service:
+    environment:
+      - FASTAPI_ENV=production
+      - LOG_LEVEL=info
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-comp_use_password}@postgres:5432/${POSTGRES_DB:-postgres_prod}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DISPLAY_NUM=1
+      - WIDTH=1024
+      - HEIGHT=768
+    volumes:
+      - comp_use_logs:/home/computeruse/logs
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
