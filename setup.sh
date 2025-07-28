@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Computer Use Session Backend Setup Script
-# Author: [Your Name Here]
+# Author: Dashgin Khudiyev
 
 set -e  # Exit on any error
 
