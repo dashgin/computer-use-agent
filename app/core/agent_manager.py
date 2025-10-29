@@ -54,10 +54,10 @@ class AgentManager:
     def __init__(
         self,
         api_key: str,
-        model: str = "claude-3-5-sonnet-20241022",
+        model: str,
         provider: APIProvider = APIProvider.ANTHROPIC,
         max_tokens: int = 4096,
-        tool_version: ToolVersion = "computer_use_20241022",
+        tool_version: ToolVersion = "computer_use_20250728",
         system_prompt_suffix: str = "",
         only_n_most_recent_images: Optional[int] = None,
         thinking_budget: Optional[int] = None,

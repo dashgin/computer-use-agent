@@ -301,7 +301,7 @@ class EditTool20250429(BaseAnthropicTool):
     The tool parameters are defined by Anthropic and are not editable.
     """
 
-    api_type: Literal["str_replace_based_edit_tool"] = "str_replace_based_edit_tool"
+    api_type: Literal["text_editor_20250429"] = "text_editor_20250429"
     name: Literal["str_replace_based_edit_tool"] = "str_replace_based_edit_tool"
 
     _file_history: dict[Path, list[str]]
@@ -559,3 +559,12 @@ class EditTool20250429(BaseAnthropicTool):
 
 class EditTool20241022(EditTool20250124):
     api_type: Literal["text_editor_20250124"] = "text_editor_20250124"  # pyright: ignore[reportIncompatibleVariableOverride]
+
+
+class EditTool20250728(EditTool20250124):
+    """
+    Text editor tool for the 20250728 API version.
+    Inherits all functionality from EditTool20250124 but uses the newer API type and name.
+    """
+    api_type: Literal["text_editor_20250728"] = "text_editor_20250728"  # pyright: ignore[reportIncompatibleVariableOverride]
+    name: Literal["str_replace_based_edit_tool"] = "str_replace_based_edit_tool"  # pyright: ignore[reportIncompatibleVariableOverride]

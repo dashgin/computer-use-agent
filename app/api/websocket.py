@@ -76,7 +76,7 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                 agent_manager = AgentManager(
                     api_key=api_key or settings.ANTHROPIC_API_KEY,
                     model=getattr(
-                        settings, "DEFAULT_MODEL", "claude-3-5-sonnet-20241022"
+                        settings, "DEFAULT_MODEL"
                     ),
                 )
                 logger.info(f"Agent manager initialized for session {session_id}")

@@ -41,7 +41,7 @@ check_docker() {
         exit 1
     fi
     
-    if ! command -v docker-compose &> /dev/null; then
+    if ! command -v docker compose &> /dev/null; then
         print_error "Docker Compose is not installed. Please install Docker Compose first."
         echo "Visit: https://docs.docker.com/compose/install/"
         exit 1
@@ -141,15 +141,15 @@ start_services() {
     
     # Pull latest images
     print_status "Pulling required Docker images..."
-    docker-compose pull postgres
+    docker compose pull postgres
     
     # Build application image
     print_status "Building application container..."
-    docker-compose build comp_use_service
+    docker compose build comp_use_service
     
     # Start services
     print_status "Starting services..."
-    docker-compose up -d
+    docker compose up -d
     
     print_success "Services started"
 }
@@ -162,7 +162,7 @@ wait_for_services() {
     print_status "Waiting for database..."
     timeout=60
     while [ $timeout -gt 0 ]; do
-        if docker-compose exec -T postgres pg_isready -U postgres &> /dev/null; then
+        if docker compose exec -T postgres pg_isready -U postgres &> /dev/null; then
             break
         fi
         sleep 2
@@ -187,7 +187,7 @@ wait_for_services() {
     
     if [ $timeout -le 0 ]; then
         print_error "API server failed to start within 60 seconds"
-        print_error "Check logs: docker-compose logs comp_use_service"
+        print_error "Check logs: docker compose logs comp_use_service"
         exit 1
     fi
     
@@ -203,7 +203,7 @@ health_check() {
         print_success "API health check passed"
     else
         print_warning "API health check failed"
-        echo "Check logs: docker-compose logs comp_use_service"
+        echo "Check logs: docker compose logs comp_use_service"
     fi
     
     # VNC health check
@@ -215,7 +215,7 @@ health_check() {
     fi
     
     # Database health check
-    if docker-compose exec -T postgres pg_isready -U postgres &> /dev/null; then
+    if docker compose exec -T postgres pg_isready -U postgres &> /dev/null; then
         print_success "Database health check passed"
     else
         print_warning "Database health check failed"
@@ -235,16 +235,16 @@ show_access_info() {
     echo "❤️  Health Check:       http://localhost:8000/health"
     echo ""
     echo "Useful commands:"
-    echo "🔍 Check status:        docker-compose ps"
-    echo "📜 View logs:           docker-compose logs -f comp_use_service"
-    echo "🛑 Stop services:       docker-compose down"
-    echo "🔄 Restart services:    docker-compose restart"
+    echo "🔍 Check status:        docker compose ps"
+    echo "📜 View logs:           docker compose logs -f comp_use_service"
+    echo "🛑 Stop services:       docker compose down"
+    echo "🔄 Restart services:    docker compose restart"
     echo ""
     
     if [ -z "${ANTHROPIC_API_KEY:-}" ] && ! grep -q "ANTHROPIC_API_KEY=sk-" .env 2>/dev/null; then
         print_warning "Remember to set your ANTHROPIC_API_KEY for full functionality!"
         echo "Run: echo 'ANTHROPIC_API_KEY=your-key-here' >> .env"
-        echo "Then: docker-compose restart comp_use_service"
+        echo "Then: docker compose restart comp_use_service"
         echo ""
     fi
     
@@ -268,7 +268,7 @@ main() {
 cleanup() {
     echo ""
     print_warning "Setup interrupted"
-    echo "To clean up, run: docker-compose down"
+    echo "To clean up, run: docker compose down"
     exit 1
 }
 
