@@ -1,14 +1,14 @@
 # Computer Use Session Backend
 
 **Author: Dashgin Khudiyev**  
-**Repository**: https://github.com/dashgin/comp_use_agent_task  
-**Live Demo Video**: [VideoDemo.mp4](./VideoDemo.mp4)
+**Repository**: https://github.com/dashgin/computer-use-agent  
+**Live Demo Video**: [Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing)
 
 A comprehensive backend API system for managing Claude Computer Use Agent sessions with real-time communication, VNC integration, and persistent storage. This project rebuilds the experimental Streamlit-based computer use demo into a robust FastAPI backend with session management capabilities.
 
 ## 🎬 Quick Links
 
-- **📹 Live Demo Video**: [VideoDemo.mp4](./VideoDemo.mp4) - Complete walkthrough of all features
+- **📹 Live Demo Video**: [Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing) - Complete walkthrough of all features
 - **🚀 Quick Start**: [One-command setup](#quick-start) with `./setup.sh`
 - **📚 API Documentation**: http://localhost:8000/docs (after setup)
 - **🖥️ VNC Desktop**: http://localhost:6080 (watch the agent work)
@@ -37,16 +37,16 @@ This system provides a **chat-like interface** where each task is treated as a *
 - 🔧 **Tool Execution Tracking**: Monitor each step of computer use operations
 - 🌐 **WebSocket & REST APIs**: Dual communication methods for flexibility
 
-## ✅ Challenge Requirements Compliance
+## 🏗️ Design Overview
 
-This project fully addresses all requirements from the original challenge:
+The key decisions behind the project:
 
-### ✅ Reused Existing Computer Use Agent Stack
+### Built on the Computer Use Agent Stack
 - **Base**: Built on [Anthropic's computer-use-demo](https://github.com/anthropics/anthropic-quickstarts/tree/main/computer-use-demo)
 - **Integration**: Complete integration of existing agent capabilities
 - **Enhancement**: Added session management and persistence layer
 
-### ✅ Replaced Streamlit with FastAPI Backend
+### Replaced Streamlit with a FastAPI Backend
 - **Session Management APIs**: Complete CRUD operations for sessions
 - **Real-time Streaming**: WebSocket-based progress updates
 - **VNC Integration**: Live desktop environment access
@@ -76,8 +76,8 @@ This project fully addresses all requirements from the original challenge:
 
 1. **Clone and Setup**:
    ```bash
-   git clone https://github.com/dashgin/comp_use_agent_task.git
-   cd comp_use_agent_task
+   git clone https://github.com/dashgin/computer-use-agent.git
+   cd computer-use-agent
    ./setup.sh
    ```
 
@@ -283,10 +283,8 @@ DATABASE_URL=postgresql+asyncpg://...
 ## 📁 Project Structure
 
 ```
-comp_use_agent_task/
-├── 📹 VideoDemo.mp4              # Live demo video
+computer-use-agent/
 ├── 🚀 setup.sh                  # One-command setup script
-├── 📋 DELIVERABLES.md           # Complete project deliverables
 ├── 🐳 docker-compose.yml       # Docker services configuration
 ├── 📦 Dockerfile               # Unified container build
 ├── 🔧 requirements-backend.txt # Python dependencies
@@ -308,12 +306,12 @@ comp_use_agent_task/
 ## 🎯 Getting Started Guide
 
 ### 1. Watch the Demo Video
-Start by watching [VideoDemo.mp4](./VideoDemo.mp4) to see all features in action.
+Start by watching [Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing) to see all features in action.
 
 ### 2. Quick Setup
 ```bash
-git clone https://github.com/dashgin/comp_use_agent_task.git
-cd comp_use_agent_task
+git clone https://github.com/dashgin/computer-use-agent.git
+cd computer-use-agent
 ./setup.sh
 ```
 
@@ -328,7 +326,6 @@ Monitor real-time agent actions at http://localhost:6080 (VNC viewer).
 
 ## 📖 Documentation Links
 
-- **📋 [Project Deliverables](./DELIVERABLES.md)** - Complete requirements compliance
 - **🎬 [Demo Video Guide](./DEMO_VIDEO.md)** - Recording instructions and content
 - **🌐 [API Reference](./docs/API_ENDPOINTS_SUMMARY.md)** - Complete endpoint documentation
 - **🐳 [Docker Deployment](./docs/DOCKER_DEPLOYMENT.md)** - Deployment and scaling guide
@@ -337,9 +334,9 @@ Monitor real-time agent actions at http://localhost:6080 (VNC viewer).
 
 ## 🔗 Important Links
 
-- **GitHub Repository**: https://github.com/dashgin/comp_use_agent_task
+- **GitHub Repository**: https://github.com/dashgin/computer-use-agent
 - **Original Anthropic Demo**: https://github.com/anthropics/anthropic-quickstarts/tree/main/computer-use-demo
-- **Live Demo Video**: [VideoDemo.mp4](./VideoDemo.mp4)
+- **Live Demo Video**: [Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing)
 - **API Documentation**: http://localhost:8000/docs (after setup)
 - **Frontend Interface**: http://localhost:8000 (after setup)
 - **VNC Desktop**: http://localhost:6080 (after setup)

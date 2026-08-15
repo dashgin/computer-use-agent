@@ -5,9 +5,7 @@
 ## 🎬 Live Demo Video
 
 ### Video Location
-- **File**: `VideoDemo.mp4` (located in project root)
-- **GitHub Link**: https://github.com/dashgin/comp_use_agent_task/blob/main/VideoDemo.mp4
-- **Direct Download**: [VideoDemo.mp4](./VideoDemo.mp4)
+- **Watch**: [Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing)
 - **Duration**: ~5 minutes
 
 ### Demo Content Overview
@@ -47,8 +45,7 @@ The demo video showcases all key features:
 
 ### Viewing Instructions
 
-1. **Download**: Click [VideoDemo.mp4](./VideoDemo.mp4)
-2. **GitHub**: View at https://github.com/dashgin/comp_use_agent_task
-3. **Local**: Located in project root directory
+1. **Watch**: Open the [demo video on Google Drive](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing)
+2. **Source**: Browse the code at https://github.com/dashgin/computer-use-agent
 
-This comprehensive demo validates all challenge requirements implementation.
+The demo walks through the full stack end to end: session creation, live agent execution, VNC streaming, and persisted chat history.

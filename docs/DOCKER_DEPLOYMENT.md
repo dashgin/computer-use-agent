@@ -15,8 +15,8 @@ This guide covers deploying the Computer Use Session Backend using a unified Doc
 
 1. **Clone and setup environment**:
    ```bash
-   git clone https://github.com/dashgin/comp_use_agent_task.git
-   cd comp_use_agent_task
+   git clone https://github.com/dashgin/computer-use-agent.git
+   cd computer-use-agent
    cp .env.example .env  # Create and configure your environment variables
    ```
 

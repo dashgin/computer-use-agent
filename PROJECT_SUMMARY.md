@@ -1,30 +1,30 @@
 # Computer Use Session Backend - Project Summary
 
 **Author**: Dashgin Khudiyev  
-**Repository**: https://github.com/dashgin/comp_use_agent_task  
-**Demo Video**: [VideoDemo.mp4](./VideoDemo.mp4)
+**Repository**: https://github.com/dashgin/computer-use-agent  
+**Demo Video**: [Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing)
 
-## 🎯 Challenge Completion Status
+## 🎯 What Was Built
 
-### ✅ All Requirements Successfully Implemented
+### Core Capabilities
 
-1. **✅ Reused Existing Computer Use Agent Stack**
+1. **Built on the Computer Use Agent Stack**
    - Base: [Anthropic's computer-use-demo](https://github.com/anthropics/anthropic-quickstarts/tree/main/computer-use-demo)
    - Integration: Complete agent functionality preserved
    - Enhancement: Added session management layer
 
-2. **✅ Replaced Streamlit with FastAPI Backend**
+2. **Replaced Streamlit with FastAPI Backend**
    - Session Management APIs: Full CRUD operations
    - Real-time Streaming: WebSocket-based progress updates
    - VNC Integration: Live desktop environment access
    - Database Persistence: PostgreSQL for chat history
 
-3. **✅ Docker Setup for Easy Deployment**
+3. **Docker Setup for Easy Deployment**
    - Unified Container: FastAPI + VNC in single container
    - One-Command Setup: `./setup.sh` automated deployment
    - Multi-Environment: Development and production configs
 
-4. **✅ Simple Frontend Demonstration**
+4. **Simple Frontend Demonstration**
    - Chat Interface: Session-based conversation UI
    - Real-time Updates: Live progress indicators
    - VNC Viewer: Embedded desktop environment
@@ -34,8 +34,8 @@
 
 ```bash
 # Clone and setup in one command
-git clone https://github.com/dashgin/comp_use_agent_task.git
-cd comp_use_agent_task
+git clone https://github.com/dashgin/computer-use-agent.git
+cd computer-use-agent
 ./setup.sh
 
 # Access points after setup
@@ -47,10 +47,9 @@ cd comp_use_agent_task
 ## 📁 Key Files & Links
 
 ### Essential Files
-- **[VideoDemo.mp4](./VideoDemo.mp4)** - Complete demo walkthrough
+- **[Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing)** - Complete demo walkthrough
 - **[setup.sh](./setup.sh)** - One-command deployment script
 - **[README.md](./README.md)** - Main project documentation
-- **[DELIVERABLES.md](./DELIVERABLES.md)** - Requirements compliance
 - **[docker-compose.yml](./docker-compose.yml)** - Service configuration
 
 ### Documentation
@@ -87,7 +86,7 @@ cd comp_use_agent_task
 
 ## 🎬 Demo Video Highlights
 
-**Duration**: ~5 minutes | **File**: [VideoDemo.mp4](./VideoDemo.mp4)
+**Duration**: ~5 minutes | **File**: [Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing)
 
 - **0:00-1:30**: Project overview and architecture
 - **1:30-3:00**: One-command setup demonstration  
@@ -134,18 +133,18 @@ cd comp_use_agent_task
 
 ## 🎯 Success Metrics
 
-- **✅ 100% Requirements Coverage**: All challenge requirements implemented
-- **✅ One-Command Setup**: Automated deployment with `./setup.sh`
-- **✅ Complete Documentation**: Comprehensive guides and API docs
-- **✅ Live Demo**: 5-minute video demonstrating all features
-- **✅ Production Ready**: Docker deployment with monitoring
-- **✅ Real-time Features**: WebSocket streaming and VNC integration
+- **Complete Feature Coverage**: Session management, streaming, VNC, and persistence
+- **One-Command Setup**: Automated deployment with `./setup.sh`
+- **Complete Documentation**: Comprehensive guides and API docs
+- **Live Demo**: 5-minute video demonstrating all features
+- **Production Ready**: Docker deployment with monitoring
+- **Real-time Features**: WebSocket streaming and VNC integration
 
 ## 🔗 Repository Links
 
-- **Main Repository**: https://github.com/dashgin/comp_use_agent_task
+- **Main Repository**: https://github.com/dashgin/computer-use-agent
 - **Original Anthropic Demo**: https://github.com/anthropics/anthropic-quickstarts/tree/main/computer-use-demo
-- **Demo Video**: [VideoDemo.mp4](./VideoDemo.mp4)
+- **Demo Video**: [Demo video (Google Drive)](https://drive.google.com/file/d/1ZD_GnaAPbnw3cC3QK0Lx3JZQEIbZf3sO/view?usp=sharing)
 - **Setup Script**: [setup.sh](./setup.sh)
 - **Documentation**: [docs/](./docs/)
 
